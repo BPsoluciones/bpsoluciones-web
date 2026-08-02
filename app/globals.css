@@ -2,28 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  background-color: #030712;
+  color: #f3f4f6;
+}
+
 body {
-  background-color: #030712 !important;
-  color: #f3f4f6 !important;
+  background-color: #030712;
+  color: #f3f4f6;
   font-family: system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* Forzar que cualquier contenedor, sección o tarjeta elimine bordes blancos y use neón */
+/* Neutralizar bordes blancos por defecto en contenedores */
 div, section, article, header, footer, nav {
   border-color: rgba(0, 243, 255, 0.2);
-}
-
-table, th, td {
-  border-color: rgba(0, 243, 255, 0.2) !important;
-  background-color: transparent !important;
-  color: #f3f4f6 !important;
-}
-
-hr {
-  border-color: rgba(0, 243, 255, 0.3) !important;
 }
 
 .neon-glow {
