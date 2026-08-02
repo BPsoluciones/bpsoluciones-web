@@ -1,9 +1,9 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import Contact from "@/components/Contact";
-import MeshBackground from "@/components/MeshBackground";
-import FloatingActions from "@/components/FloatingActions";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import Services from "./components/Services";
+import Contact from "./components/Contact";
+import MeshBackground from "./components/MeshBackground";
+import FloatingActions from "./components/FloatingActions";
 
 export default function Home() {
   return (
@@ -23,7 +23,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Aquí es donde deben estar los botones flotantes */}
       <FloatingActions />
 
       <footer className="relative z-10 py-8 px-6 text-center border-t border-gray-900 bg-gray-950/40 backdrop-blur-md text-xs text-gray-500">
