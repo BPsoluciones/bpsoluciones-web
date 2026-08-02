@@ -2,23 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  background-color: #030712;
-  color: #f3f4f6;
-}
-
-body {
-  background-color: #030712;
-  color: #f3f4f6;
-  font-family: system-ui, -apple-system, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-/* Neutralizar bordes blancos por defecto en contenedores */
-div, section, article, header, footer, nav {
-  border-color: rgba(0, 243, 255, 0.2);
+@layer base {
+  body {
+    background-color: #030712;
+    color: #f3f4f6;
+    font-family: system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
 }
 
 .neon-glow {
