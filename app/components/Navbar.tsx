@@ -1,52 +1,99 @@
 'use client';
-
-import React from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
+import ClientPortal from './ClientPortal';
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#050711]/90 backdrop-blur-md border-b border-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        
-        {/* Logo BP Soluciones */}
-        <a href="#inicio" className="flex items-center gap-3 group">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl font-black italic tracking-tighter text-[#00d2ff]">B</span>
-              <span className="text-3xl font-black italic tracking-tighter text-[#ff007a] -ml-2">P</span>
-              {/* Micro Íconos del Logo */}
-              <div className="hidden sm:flex items-center gap-1.5 ml-1 text-slate-400 text-xs">
-                <span>💡</span>
-                <span>🖥️</span>
-                <span>💻</span>
-                <span>📡</span>
-              </div>
+    <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-cyan-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Logo */}
+          <Link href="#inicio" className="flex items-center gap-3 group">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-cyan-500/40 bg-neutral-900 shadow-[0_0_15px_rgba(6,182,212,0.3)] flex items-center justify-center group-hover:border-cyan-400 transition-colors">
+              <Image 
+                src="/logo.png" 
+                alt="BP Soluciones Logo" 
+                fill 
+                className="object-cover" 
+              />
             </div>
-            <span className="text-xs font-bold tracking-widest text-slate-200 uppercase -mt-1">
-              Soluciones
+            <span className="text-white font-extrabold tracking-wider text-lg sm:text-xl">
+              BP <span className="text-cyan-400">SOLUCIONES</span>
             </span>
+          </Link>
+
+          {/* Menú Desktop */}
+          <div className="hidden md:flex items-center gap-6 font-medium text-sm text-neutral-300">
+            <Link href="#inicio" className="hover:text-cyan-400 transition-colors">Inicio</Link>
+            <Link href="#monitoreo" className="hover:text-cyan-400 transition-colors">Monitoreo</Link>
+            <Link href="#servicios" className="hover:text-cyan-400 transition-colors">Servicios</Link>
+            <Link href="#proyectos" className="hover:text-cyan-400 transition-colors">Proyectos</Link>
+            <Link href="#contacto" className="hover:text-cyan-400 transition-colors">Contacto</Link>
+            
+            {/* Componente de Registro / Área Clientes */}
+            <ClientPortal />
           </div>
-        </a>
 
-        {/* Menú de Navegación */}
-        <nav className="hidden md:flex space-x-8 text-xs font-bold text-slate-300 uppercase tracking-widest">
-          <a href="#inicio" className="hover:text-[#00d2ff] transition-colors">Inicio</a>
-          <a href="#monitoreo" className="hover:text-[#00d2ff] transition-colors">Monitoreo</a>
-          <a href="#servicios" className="hover:text-[#00d2ff] transition-colors">Servicios</a>
-          <a href="#proyectos" className="hover:text-[#00d2ff] transition-colors">Proyectos</a>
-          <a href="#faq" className="hover:text-[#00d2ff] transition-colors">Preguntas</a>
-          <a href="#contacto" className="hover:text-[#00d2ff] transition-colors">Contacto</a>
-        </nav>
+          {/* Botón Menú Móvil */}
+          <div className="md:hidden flex items-center gap-3">
+            <ClientPortal />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-neutral-300 hover:text-white p-2 focus:outline-none"
+            >
+              {isOpen ? <X className="w-6 h-6 text-cyan-400" /> : <Menu className="w-6 h-6 text-cyan-400" />}
+            </button>
+          </div>
 
-        {/* Botón Presupuesto */}
-        <a
-          href="https://wa.me/5493516175777?text=Hola%20BPsoluciones,%20quisiera%20solicitar%20un%20presupuesto"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-xs font-black text-white uppercase tracking-wider bg-gradient-to-r from-[#00d2ff] to-[#ff007a] rounded-xl transition-all shadow-lg shadow-[#ff007a]/20 hover:scale-105"
-        >
-          Presupuesto
-        </a>
+        </div>
       </div>
-    </header>
+
+      {/* Menú desplegable para Celular */}
+      {isOpen && (
+        <div className="md:hidden bg-neutral-950/95 border-b border-cyan-500/20 backdrop-blur-xl px-4 pt-4 pb-6 space-y-3">
+          <Link 
+            href="#inicio" 
+            onClick={() => setIsOpen(false)}
+            className="block py-2 text-neutral-200 hover:text-cyan-400 font-medium"
+          >
+            Inicio
+          </Link>
+          <Link 
+            href="#monitoreo" 
+            onClick={() => setIsOpen(false)}
+            className="block py-2 text-neutral-200 hover:text-cyan-400 font-medium"
+          >
+            Monitoreo
+          </Link>
+          <Link 
+            href="#servicios" 
+            onClick={() => setIsOpen(false)}
+            className="block py-2 text-neutral-200 hover:text-cyan-400 font-medium"
+          >
+            Servicios
+          </Link>
+          <Link 
+            href="#proyectos" 
+            onClick={() => setIsOpen(false)}
+            className="block py-2 text-neutral-200 hover:text-cyan-400 font-medium"
+          >
+            Proyectos
+          </Link>
+          <Link 
+            href="#contacto" 
+            onClick={() => setIsOpen(false)}
+            className="block w-full text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-black font-extrabold uppercase text-sm tracking-wider"
+          >
+            Contacto Directo
+          </Link>
+        </div>
+      )}
+    </nav>
   );
 }

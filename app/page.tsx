@@ -1,33 +1,30 @@
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Services from "./components/Services";
-import Contact from "./components/Contact";
-import MeshBackground from "./components/MeshBackground";
-import FloatingActions from "./components/FloatingActions";
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import SocDashboard from './components/SocDashboard'; // <--- Nuevo Panel SOC
+import Monitoreo from './components/Monitoring';
+import Services from './components/Services';
+import AiConfigurator from './components/AiConfigurator'; // <--- Nuevo Simulador IA
+import Projects from './components/Projects';
+import PhotoGallery from './components/PhotoGallery';
+import Faq from './components/Faq';
+import Contact from './components/Contact';
+import FloatingActions from './components/FloatingActions';
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[#030712] text-gray-100 overflow-hidden flex flex-col justify-between">
-      <MeshBackground />
+    <main className="min-h-screen bg-black selection:bg-cyan-400 selection:text-black relative">
       <Navbar />
-
-      <div className="relative z-10 flex-grow">
-        <Hero />
-        
-        <div id="servicios">
-          <Services />
-        </div>
-
-        <div id="contacto">
-          <Contact />
-        </div>
-      </div>
-
+      <div id="inicio" className="pt-20"></div>
+      <Hero />
+      <SocDashboard /> {/* Panel interactivo en tiempo real */}
+      <Monitoreo />
+      <Services />
+      <AiConfigurator /> {/* Asistente interactivo de arquitectura */}
+      <Projects />
+      <PhotoGallery />
+      <Faq />
+      <Contact />
       <FloatingActions />
-
-      <footer className="relative z-10 py-8 px-6 text-center border-t border-gray-900 bg-gray-950/40 backdrop-blur-md text-xs text-gray-500">
-        <p>© {new Date().getFullYear()} BPsoluciones. Todos los derechos reservados.</p>
-      </footer>
     </main>
   );
 }
