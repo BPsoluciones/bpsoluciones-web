@@ -19,9 +19,9 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
-        // Registrar nuevo usuario en Supabase (desde cualquier celular o PC)
-        const { error } = await supabase.from('users').insert([
-          { name, email, password, status: 'Inactivo' }
+        // Registrar nuevo usuario en Supabase (tabla 'usuarios')
+        const { error } = await supabase.from('usuarios').insert([
+          { nombre: name, correo: email, contraseña: password, estado: 'Inactivo' }
         ]);
 
         if (error) throw error;
@@ -29,20 +29,20 @@ export default function LoginPage() {
         alert('¡Registro exitoso! Un administrador activará tu cuenta pronto.');
         setIsRegistering(false);
       } else {
-        // Iniciar sesión buscando en Supabase
+        // Iniciar sesión buscando en Supabase (tabla 'usuarios')
         const { data, error } = await supabase
-          .from('users')
+          .from('usuarios')
           .select('*')
-          .eq('email', email)
-          .eq('password', password)
+          .eq('correo', email)
+          .eq('contraseña', password)
           .single();
 
         if (error || !data) {
           alert('Correo o contraseña incorrectos.');
-        } else if (data.status !== 'Activo') {
+        } else if (data.estado !== 'Activo') {
           alert('Tu cuenta está pendiente de activación por el administrador.');
         } else {
-          localStorage.setItem('bp_user', data.name);
+          localStorage.setItem('bp_user', data.nombre);
           router.push('/portal');
         }
       }
