@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { User, Shield, X, AlertCircle, Lock } from 'lucide-react';
+import { User, Shield, X, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function ClientPortal() {
@@ -62,8 +62,8 @@ export default function ClientPortal() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-          <div className="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 overflow-y-auto">
+          <div className="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl relative my-auto">
             <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-neutral-400 hover:text-white">
               <X className="w-5 h-5" />
             </button>
