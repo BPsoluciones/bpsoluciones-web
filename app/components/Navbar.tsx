@@ -1,8 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X } from 'lucide-react';
-import ClientPortal from './ClientPortal';
+import { Shield, Menu, X, User } from 'lucide-react';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -11,7 +10,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
-        {/* LOGO MEJORADO Y PROFESIONAL */}
+        {/* LOGO */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 border border-cyan-500/40 text-cyan-400 group-hover:border-cyan-400 transition-all shadow-[0_0_20px_rgba(6,182,212,0.15)]">
             <Shield className="w-5 h-5" />
@@ -36,7 +35,14 @@ export default function Navbar() {
 
         {/* ACCESO CLIENTES Y BOTÓN MÓVIL */}
         <div className="flex items-center gap-3">
-          <ClientPortal />
+          {/* BOTÓN HACIA LA PÁGINA LOGIN */}
+          <Link 
+            href="/login" 
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all font-bold text-sm"
+          >
+            <User className="w-4 h-4" />
+            Área Clientes
+          </Link>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -47,37 +53,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* MENÚ MÓVIL DESPLEGABLE */}
+      {/* MENÚ MÓVIL */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-neutral-950 border-b border-neutral-800 px-4 py-6 space-y-4">
-          <Link
-            href="#servicios"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm font-medium text-neutral-300 hover:text-cyan-400"
-          >
-            Servicios
-          </Link>
-          <Link
-            href="#monitoreo"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm font-medium text-neutral-300 hover:text-cyan-400"
-          >
-            Monitoreo
-          </Link>
-          <Link
-            href="#proyectos"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm font-medium text-neutral-300 hover:text-cyan-400"
-          >
-            Proyectos
-          </Link>
-          <Link
-            href="#contacto"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm font-medium text-neutral-300 hover:text-cyan-400"
-          >
-            Contacto
-          </Link>
+          <Link href="#servicios" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Servicios</Link>
+          <Link href="#monitoreo" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Monitoreo</Link>
+          <Link href="#proyectos" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Proyectos</Link>
+          <Link href="#contacto" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Contacto</Link>
         </div>
       )}
     </header>
