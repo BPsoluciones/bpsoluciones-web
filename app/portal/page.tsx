@@ -1,12 +1,12 @@
+'use client';
+
 import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-'use client';
-import { useEffect, useState } from 'react';
-
-import { useRouter } from 'next/navigation';
 
 export default function PortalPage() {
   const router = useRouter();
@@ -34,75 +34,60 @@ export default function PortalPage() {
     const newStatus = currentStatus === 'Activo' ? 'Inactivo' : 'Activo';
     const { error } = await supabase
       .from('users')
-      .update({ estado: newStatus })
+      .update({ status: newStatus })
       .eq('id', id);
 
     if (error) {
-      alert('Error al actualizar estado: ' + error.message);
+      console.error('Error al actualizar estado:', error.message);
     } else {
       fetchUsers();
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('bp_user');
-    router.push('/login');
-  };
-
   return (
-    <div className="min-h-screen bg-neutral-950 p-8 text-white">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-black">Panel de Administración</h1>
-            <p className="text-sm text-neutral-400 mt-1">Clientes registrados desde cualquier dispositivo</p>
-          </div>
-          <div className="flex gap-3">
-            <button 
-              onClick={fetchUsers}
-              className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors"
-            >
-              Actualizar Lista
-            </button>
-            <button 
-              onClick={handleLogout}
-              className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
+    <div style={{ padding: '20px', color: '#fff', backgroundColor: '#0f172a', minHeight: '100vh' }}>
+      <h1>Panel de Administración / Portal</h1>
+      <button 
+        onClick={fetchUsers} 
+        style={{ margin: '10px 0', padding: '8px 16px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+      >
+        Actualizar Lista
+      </button>
 
-        {loading ? (
-          <p className="text-neutral-400">Cargando registros desde la nube...</p>
-        ) : users.length === 0 ? (
-          <p className="text-neutral-400">No hay clientes registrados todavía.</p>
-        ) : (
-          <div className="space-y-4">
+      {loading ? (
+        <p>Cargando registros...</p>
+      ) : (
+        <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #334155' }}>
+              <th style={{ padding: '10px' }}>Email / Usuario</th>
+              <th style={{ padding: '10px' }}>Estado</th>
+              <th style={{ padding: '10px' }}>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
             {users.map((user) => (
-              <div key={user.id || user.correo} className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl flex justify-between items-center shadow-lg">
-                <div>
-                  <p className="font-bold text-lg text-white">{user.nombre}</p>
-                  <p className="text-sm text-neutral-400">{user.correo}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    user.estado === 'Activo' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                  }`}>
-                    {user.estado || 'Inactivo'}
-                  </span>
-                  <button
-                    onClick={() => toggleStatus(user.id, user.estado)}
-                    className="bg-cyan-500 hover:bg-cyan-400 text-black text-xs font-bold px-4 py-2 rounded-xl transition-colors"
+              <tr key={user.id} style={{ borderBottom: '1px solid #1e293b' }}>
+                <td style={{ padding: '10px' }}>{user.email || user.username || 'Sin identificar'}</td>
+                <td style={{ padding: '10px' }}>{user.status || 'Activo'}</td>
+                <td style={{ padding: '10px' }}>
+                  <button 
+                    onClick={() => toggleStatus(user.id, user.status || 'Activo')}
+                    style={{ padding: '5px 10px', background: '#64748b', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                   >
-                    {user.estado === 'Activo' ? 'Desactivar' : 'Activar'}
+                    Cambiar Estado
                   </button>
-                </div>
-              </div>
+                </td>
+              </tr>
             ))}
-          </div>
-        )}
-      </div>
+            {users.length === 0 && (
+              <tr>
+                <td colSpan={3} style={{ padding: '20px', textAlign: 'center' }}>No hay registros en la base de datos.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
