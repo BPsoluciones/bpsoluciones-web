@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
-        // Registrar nuevo usuario en Supabase
+        // Registrar nuevo usuario en Supabase (desde cualquier celular o PC)
         const { error } = await supabase.from('users').insert([
           { name, email, password, status: 'Inactivo' }
         ]);
