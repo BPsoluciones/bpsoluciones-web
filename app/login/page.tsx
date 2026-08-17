@@ -19,8 +19,8 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
-        // Registrar nuevo usuario en Supabase (tabla 'usuarios')
-        const { error } = await supabase.from('usuarios').insert([
+        // Registrar nuevo usuario en Supabase (tabla 'users')
+        const { error } = await supabase.from('users').insert([
           { nombre: name, correo: email, contraseña: password, estado: 'Inactivo' }
         ]);
 
@@ -29,9 +29,9 @@ export default function LoginPage() {
         alert('¡Registro exitoso! Un administrador activará tu cuenta pronto.');
         setIsRegistering(false);
       } else {
-        // Iniciar sesión buscando en Supabase (tabla 'usuarios')
+        // Iniciar sesión buscando en Supabase (tabla 'users')
         const { data, error } = await supabase
-          .from('usuarios')
+          .from('users')
           .select('*')
           .eq('correo', email)
           .eq('contraseña', password)
