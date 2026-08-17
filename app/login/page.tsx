@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Shield, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,25 +11,45 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    const existingUsers = JSON.parse(localStorage.getItem('bp_all_users') || '[]');
-    
-    if (isRegistering) {
-      const newUser = { id: Date.now().toString(), name, email, password, status: 'Inactivo' };
-      existingUsers.push(newUser);
-      localStorage.setItem('bp_all_users', JSON.stringify(existingUsers));
-      alert('Registro enviado. Un administrador activará su cuenta.');
-      setIsRegistering(false);
-    } else {
-      const found = existingUsers.find((u: any) => u.email === email && u.password === password);
-      if (found?.status === 'Activo') {
-        localStorage.setItem('bp_user', found.name);
-        router.push('/portal');
+    setLoading(true);
+
+    try {
+      if (isRegistering) {
+        // Registrar nuevo usuario en Supabase
+        const { error } = await supabase.from('users').insert([
+          { name, email, password, status: 'Inactivo' }
+        ]);
+
+        if (error) throw error;
+
+        alert('¡Registro exitoso! Un administrador activará tu cuenta pronto.');
+        setIsRegistering(false);
       } else {
-        alert('Credenciales inválidas o cuenta pendiente de activación.');
+        // Iniciar sesión buscando en Supabase
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .eq('password', password)
+          .single();
+
+        if (error || !data) {
+          alert('Correo o contraseña incorrectos.');
+        } else if (data.status !== 'Activo') {
+          alert('Tu cuenta está pendiente de activación por el administrador.');
+        } else {
+          localStorage.setItem('bp_user', data.name);
+          router.push('/portal');
+        }
       }
+    } catch (err: any) {
+      alert('Ocurrió un error: ' + (err.message || 'Inténtalo de nuevo'));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,15 +64,43 @@ export default function LoginPage() {
           <h1 className="text-2xl font-black text-white">{isRegistering ? 'Crear Cuenta' : 'Bienvenido a BP'}</h1>
         </div>
         <form onSubmit={handleAuth} className="space-y-4">
-          {isRegistering && <input type="text" placeholder="Nombre" onChange={(e) => setName(e.target.value)} className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white" />}
-          <input type="email" placeholder="Correo" onChange={(e) => setEmail(e.target.value)} className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white" />
-          <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white" />
-          <button type="submit" className="w-full bg-cyan-500 font-bold py-3 rounded-xl text-black">
-            {isRegistering ? 'Registrarse' : 'Ingresar'}
+          {isRegistering && (
+            <input 
+              type="text" 
+              placeholder="Nombre completo" 
+              required
+              onChange={(e) => setName(e.target.value)} 
+              className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white text-xs outline-none focus:border-cyan-500" 
+            />
+          )}
+          <input 
+            type="email" 
+            placeholder="Correo electrónico" 
+            required
+            onChange={(e) => setEmail(e.target.value)} 
+            className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white text-xs outline-none focus:border-cyan-500" 
+          />
+          <input 
+            type="password" 
+            placeholder="Contraseña" 
+            required
+            onChange={(e) => setPassword(e.target.value)} 
+            className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl text-white text-xs outline-none focus:border-cyan-500" 
+          />
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full bg-cyan-500 font-bold py-3 rounded-xl text-black text-xs hover:bg-cyan-400 transition-colors"
+          >
+            {loading ? 'Procesando...' : (isRegistering ? 'Registrarse' : 'Ingresar')}
           </button>
         </form>
-        <button onClick={() => setIsRegistering(!isRegistering)} className="w-full text-center text-xs text-cyan-400 mt-6 hover:underline">
-          {isRegistering ? '¿Ya tienes cuenta?' : '¿No tienes cuenta? Regístrate'}
+        <button 
+          type="button"
+          onClick={() => setIsRegistering(!isRegistering)} 
+          className="w-full text-center text-xs text-cyan-400 mt-6 hover:underline"
+        >
+          {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
         </button>
       </div>
     </div>
