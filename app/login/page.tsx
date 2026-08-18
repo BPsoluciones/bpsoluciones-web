@@ -12,30 +12,39 @@ export const supabase = createClient(
   supabaseAnonKey || 'placeholder-key'
 );
 
-export default function LoginPage() {
+export default function AuthPage() {
   const router = useRouter();
+  const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+    setMessage('');
 
     if (!supabaseUrl || !supabaseAnonKey) {
       setErrorMsg('Faltan configurar las variables de Supabase en Vercel.');
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setErrorMsg(error.message);
+    if (isRegistering) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        setErrorMsg(error.message);
+      } else {
+        setMessage('¡Cuenta creada con éxito! Ya puedes iniciar sesión.');
+        setIsRegistering(false);
+      }
     } else {
-      router.push('/portal');
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setErrorMsg(error.message);
+      } else {
+        router.push('/portal');
+      }
     }
   };
 
@@ -49,7 +58,7 @@ export default function LoginPage() {
       color: '#fff',
       fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
-      <form onSubmit={handleLogin} style={{ 
+      <form onSubmit={handleSubmit} style={{ 
         display: 'flex', 
         flexDirection: 'column', 
         width: '100%', 
@@ -62,13 +71,23 @@ export default function LoginPage() {
         gap: '16px' 
       }}>
         <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 'bold' }}>Iniciar Sesión</h2>
-          <p style={{ margin: 0, color: '#9ca3af', fontSize: '14px' }}>Acceso al panel de administración</p>
+          <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 'bold' }}>
+            {isRegistering ? 'Crear Cuenta' : 'Iniciar Sesión'}
+          </h2>
+          <p style={{ margin: 0, color: '#9ca3af', fontSize: '14px' }}>
+            {isRegistering ? 'Regístrate para acceder al sistema' : 'Acceso al panel de administración'}
+          </p>
         </div>
 
         {errorMsg && (
           <div style={{ padding: '10px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '6px', color: '#f87171', fontSize: '13px' }}>
             {errorMsg}
+          </div>
+        )}
+
+        {message && (
+          <div style={{ padding: '10px', background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: '6px', color: '#4ade80', fontSize: '13px' }}>
+            {message}
           </div>
         )}
 
@@ -127,8 +146,18 @@ export default function LoginPage() {
             transition: 'background 0.2s'
           }}
         >
-          Entrar al Sistema
+          {isRegistering ? 'Registrarse' : 'Entrar al Sistema'}
         </button>
+
+        <div style={{ textAlign: 'center', marginTop: '8px' }}>
+          <button 
+            type="button" 
+            onClick={() => { setIsRegistering(!isRegistering); setErrorMsg(''); setMessage(''); }}
+            style={{ background: 'none', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: '14px', textDecoration: 'underline' }}
+          >
+            {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate aquí'}
+          </button>
+        </div>
       </form>
     </div>
   );
