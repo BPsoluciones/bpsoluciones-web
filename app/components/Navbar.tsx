@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Shield, Menu, X, User } from 'lucide-react';
+import { Shield, Menu, X, User, Lock } from 'lucide-react';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,15 +33,24 @@ export default function Navbar() {
           <Link href="#contacto" className="hover:text-cyan-400 transition-colors">Contacto</Link>
         </nav>
 
-        {/* ACCESO CLIENTES Y BOTÓN MÓVIL */}
+        {/* ACCESO CLIENTES, ADMIN Y BOTÓN MÓVIL */}
         <div className="flex items-center gap-3">
-          {/* BOTÓN HACIA LA PÁGINA LOGIN */}
+          {/* BOTÓN ÁREA CLIENTES / LOGIN */}
           <Link 
             href="/login" 
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all font-bold text-sm"
+            className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all font-bold text-sm"
           >
             <User className="w-4 h-4" />
-            Área Clientes
+            Login
+          </Link>
+
+          {/* BOTÓN PANEL ADMIN */}
+          <Link 
+            href="/admin" 
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-300 hover:bg-purple-600 hover:text-white transition-all font-bold text-sm"
+          >
+            <Lock className="w-4 h-4" />
+            Admin
           </Link>
 
           <button
@@ -60,6 +69,9 @@ export default function Navbar() {
           <Link href="#monitoreo" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Monitoreo</Link>
           <Link href="#proyectos" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Proyectos</Link>
           <Link href="#contacto" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-neutral-300 hover:text-cyan-400">Contacto</Link>
+          <div className="pt-2 border-t border-neutral-800 flex flex-col gap-2">
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-cyan-400">Login Clientes</Link>
+          </div>
         </div>
       )}
     </header>

@@ -1,38 +1,147 @@
 'use client';
 
-import { createClient } from '@supabase/supabase-js';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
+import Link from 'next/link';
+import { Shield, Lock, Mail, ArrowRight } from 'lucide-react';
 
-// Definimos las constantes aquí mismo para evitar errores de importación
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-// Inicializamos el cliente directamente aquí
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(
+  'https://vfkczehayprgpeacscll.supabase.co',
+  'sb_publishable_yaMi1lRMfoomSgZ-SK45fQ_lrSbdTxz'
+);
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setErrorMsg(error.message);
-    else router.push('/portal');
+    setLoading(true);
+    setErrorMsg('');
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrorMsg('Correo o contraseña incorrectos.');
+      setLoading(false);
+    } else {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: cliente } = await supabase
+          .from('clientes')
+          .select('is_admin')
+          .eq('id', session.user.id)
+          .single();
+
+        if (cliente?.is_admin) {
+          router.push('/admin');
+        } else {
+          router.push('/portal');
+        }
+      }
+    }
   };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Iniciar Sesión</h1>
-      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: 'auto' }}>
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Entrar</button>
-        {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-      </form>
+    <div className="min-h-screen bg-neutral-950 text-white flex flex-col justify-center items-center p-4 relative">
+      {/* Fondo decorativo sutil idéntico al estilo de la web */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.05)_0,transparent_70%)] pointer-events-none"></div>
+
+      <div className="max-w-md w-full bg-neutral-900/80 backdrop-blur-md border border-neutral-800 p-8 rounded-3xl shadow-2xl space-y-6 relative z-10">
+        
+        {/* LOGO IDÉNTICO AL DE LA PÁGINA PRINCIPAL */}
+        <div className="text-center space-y-4">
+          <Link href="/" className="inline-flex items-center gap-3 group justify-center">
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 border border-cyan-500/40 text-cyan-400 group-hover:border-cyan-400 transition-all shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+              <Shield className="w-6 h-6" />
+            </div>
+            <div className="text-left">
+              <span className="font-black text-white tracking-wider text-lg block leading-tight">
+                BP
+              </span>
+              <span className="font-extrabold text-cyan-400 tracking-[0.2em] text-[11px] block">
+                SOLUCIONES
+              </span>
+            </div>
+          </Link>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">Iniciar Sesión</h1>
+            <p className="text-xs text-neutral-400 mt-1">Accede al portal de gestión y seguridad</p>
+          </div>
+        </div>
+
+        {/* Mensaje de Error */}
+        {errorMsg && (
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium">
+            {errorMsg}
+          </div>
+        )}
+
+        {/* Formulario */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="text-xs text-neutral-400 block mb-1 font-medium">Correo Electrónico</label>
+            <div className="relative">
+              <Mail className="w-5 h-5 text-neutral-500 absolute left-3 top-3" />
+              <input 
+                type="email" 
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="tu@correo.com"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 pl-10 text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs text-neutral-400 block mb-1 font-medium">Contraseña</label>
+            <div className="relative">
+              <Lock className="w-5 h-5 text-neutral-500 absolute left-3 top-3" />
+              <input 
+                type="password" 
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 pl-10 text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-[0_0_20px_rgba(6,182,212,0.2)] mt-2"
+          >
+            {loading ? 'Verificando...' : 'Ingresar al Portal'}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
+
+        {/* Enlace de Registro y Volver */}
+        <div className="pt-4 border-t border-neutral-800 text-center space-y-3">
+          <p className="text-xs text-neutral-400">
+            ¿No tienes una cuenta?{' '}
+            <Link href="/register" className="text-cyan-400 hover:underline font-semibold">
+              Regístrate aquí
+            </Link>
+          </p>
+          <div>
+            <Link href="/" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">
+              ← Volver a la página principal
+            </Link>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
