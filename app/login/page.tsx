@@ -51,24 +51,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col justify-center items-center p-4 relative">
-      {/* Fondo decorativo sutil idéntico al estilo de la web */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.05)_0,transparent_70%)] pointer-events-none"></div>
 
-      <div className="max-w-md w-full bg-neutral-900/80 backdrop-blur-md border border-neutral-800 p-8 rounded-3xl shadow-2xl space-y-6 relative z-10">
-        
-        {/* LOGO IDÉNTICO AL DE LA PÁGINA PRINCIPAL */}
+      <div className="max-w-md w-full bg-neutral-900/85 backdrop-blur-md border border-neutral-800 p-8 rounded-3xl shadow-2xl space-y-6 relative z-10">
         <div className="text-center space-y-4">
           <Link href="/" className="inline-flex items-center gap-3 group justify-center">
             <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 border border-cyan-500/40 text-cyan-400 group-hover:border-cyan-400 transition-all shadow-[0_0_20px_rgba(6,182,212,0.15)]">
               <Shield className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <span className="font-black text-white tracking-wider text-lg block leading-tight">
-                BP
-              </span>
-              <span className="font-extrabold text-cyan-400 tracking-[0.2em] text-[11px] block">
-                SOLUCIONES
-              </span>
+              <span className="font-black text-white tracking-wider text-lg block leading-tight">BP</span>
+              <span className="font-extrabold text-cyan-400 tracking-[0.2em] text-[11px] block">SOLUCIONES</span>
             </div>
           </Link>
           <div>
@@ -77,14 +70,12 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Mensaje de Error */}
         {errorMsg && (
           <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium">
             {errorMsg}
           </div>
         )}
 
-        {/* Formulario */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="text-xs text-neutral-400 block mb-1 font-medium">Correo Electrónico</label>
@@ -126,7 +117,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Enlace de Registro y Volver */}
         <div className="pt-4 border-t border-neutral-800 text-center space-y-3">
           <p className="text-xs text-neutral-400">
             ¿No tienes una cuenta?{' '}
@@ -140,7 +130,6 @@ export default function LoginPage() {
             </Link>
           </div>
         </div>
-
       </div>
     </div>
   );
